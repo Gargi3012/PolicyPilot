@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block title %}Results - {{ policy.name }}{% endblock %}
+
+{% block head %}
+<style>
+.impact-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+.impact-card.positive {
+    border-left-color: #28a745;
+    background: linear-gradient(135deg, #d4edda 0%, #f8fff8 100%);
+}
+.impact-card.negative {
+    border-left-color: #dc3545;
+    background: linear-gradient(135deg, #f8d7da 0%, #fff8f8 100%);
+}
+.impact-card.neutral {
+    border-left-color: #ffc107;
+    background: linear-gradient(135deg, #fff3cd 0%, #fffef8 100%);
+}
+.confidence-bar {
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Policy Results</li>
+                        </ol>
+                    </nav>
+                    <h1 class="h2 fw-bold text-dark mb-2">{{ policy.name }}</h1>
+                    <div class="d-flex gap-3 align-items-center">
+                        <span class="badge bg-primary fs-6">{{ policy.sector }}</span>
+                        <span class="badge bg-info fs-6">{{ policy.region }}</span>
+                        <span class="badge {{ 'bg-success' if policy.numeric_change > 0 else 'bg-danger' }} fs-6">
+                            {{ policy.numeric_change|round(1) }}% Change
+                        </span>
+                        <span class="text-muted">{{ policy.time_period }} months</span>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('export_pdf', policy_id=policy.id) }}" class="btn btn-danger">
+                        <i class="fas fa-file-pdf me-1"></i>Export PDF
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>New Simulation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if policy.description %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title fw-bold">
+                        <i class="fas fa-info-circle me-2 text-primary"></i>Policy Description
+                    </h6>
+                    <p class="card-text">{{ policy.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if prediction %}
+    <!-- Impact Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card impact-card {{ 'positive' if prediction.gdp_impact > 0 else 'negative' if prediction.gdp_impact < -0.5 else 'neutral' }} h-100">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-chart-line fa-2x {{ 'text-success' if prediction.gdp_impact > 0 else 'text-danger' if prediction.gdp_impact < -0.5 else 'text-warning' }}"></i>
+                    </div>
+                    <h4 class="fw-bold">{{ prediction.gdp_impact|round(2) }}%</h4>
+                    <h6 class="text-muted mb-0">GDP Impact</h6>
+                    <small class="text-muted">
+                        {% if prediction.gdp_impact > 1 %}
+                            Strong Growth
+                        {% elif prediction.gdp_impact > 0 %}
+                            Positive Growth
+                        {% elif prediction.gdp_impact > -1 %}
+                            Minimal Impact
+                        {% else %}
+                            Negative Impact
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card impact-card {{ 'negative' if prediction.inflation_impact > 0.5 else 'positive' if prediction.inflation_impact < -0.5 else 'neutral' }} h-100">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-percentage fa-2x {{ 'text-danger' if prediction.inflation_impact > 0.5 else 'text-success' if prediction.inflation_impact < -0.5 else 'text-warning' }}"></i>
+                    </div>
+                    <h4 class="fw-bold">{{ prediction.inflation_impact|round(2) }}pp</h4>
+                    <h6 class="text-muted mb-0">Inflation Impact</h6>
+                    <small class="text-muted">
+                        {% if prediction.inflation_impact > 0.5 %}
+                            Inflationary
+                        {% elif prediction.inflation_impact < -0.5 %}
+                            Deflationary
+                        {% else %}
+                            Stable
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card impact-card {{ 'negative' if prediction.unemployment_impact > 0.5 else 'positive' if prediction.unemployment_impact < -0.5 else 'neutral' }} h-100">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-users fa-2x {{ 'text-danger' if prediction.unemployment_impact > 0.5 else 'text-success' if prediction.unemployment_impact < -0.5 else 'text-warning' }}"></i>
+                    </div>
+                    <h4 class="fw-bold">{{ prediction.unemployment_impact|round(2) }}pp</h4>
+                    <h6 class="text-muted mb-0">Unemployment Impact</h6>
+                    <small class="text-muted">
+                        {% if prediction.unemployment_impact > 0.5 %}
+                            Job Losses
+                        {% elif prediction.unemployment_impact < -0.5 %}
+                            Job Creation
+                        {% else %}
+                            Stable Employment
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card impact-card {{ 'negative' if prediction.environmental_impact > 2 else 'positive' if prediction.environmental_impact < -2 else 'neutral' }} h-100">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-leaf fa-2x {{ 'text-danger' if prediction.environmental_impact > 2 else 'text-success' if prediction.environmental_impact < -2 else 'text-warning' }}"></i>
+                    </div>
+                    <h4 class="fw-bold">{{ prediction.environmental_impact|round(2) }}%</h4>
+                    <h6 class="text-muted mb-0">Environmental Impact</h6>
+                    <small class="text-muted">
+                        {% if prediction.environmental_impact > 2 %}
+                            Environmental Concern
+                        {% elif prediction.environmental_impact < -2 %}
+                            Environmental Benefit
+                        {% else %}
+                            Neutral Impact
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Analysis -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2 text-primary"></i>
+                        Economic Impact Analysis
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-brain me-2 text-primary"></i>
+                        Analysis Confidence
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Prediction Confidence</label>
+                        <div class="confidence-bar bg-light mb-2">
+                            <div class="bg-primary h-100" style="width: {{ (prediction.confidence_score * 100)|round }}%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">{{ (prediction.confidence_score * 100)|round }}%</span>
+                            <span class="badge {{ 'bg-success' if prediction.confidence_score > 0.7 else 'bg-warning' if prediction.confidence_score > 0.5 else 'bg-danger' }}">
+                                {% if prediction.confidence_score > 0.7 %}
+                                    High Confidence
+                                {% elif prediction.confidence_score > 0.5 %}
+                                    Medium Confidence
+                                {% else %}
+                                    Low Confidence
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Public Sentiment</label>
+                        <div class="confidence-bar bg-light mb-2">
+                            <div class="{{ 'bg-success' if prediction.sentiment_score > 0 else 'bg-danger' if prediction.sentiment_score < 0 else 'bg-warning' }} h-100" 
+                                 style="width: {{ ((prediction.sentiment_score + 1) * 50)|round }}%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">{{ prediction.sentiment_score|round(2) }}</span>
+                            <span class="badge {{ 'bg-success' if prediction.sentiment_score > 0.3 else 'bg-danger' if prediction.sentiment_score < -0.3 else 'bg-warning' }}">
+                                {% if prediction.sentiment_score > 0.3 %}
+                                    Positive
+                                {% elif prediction.sentiment_score < -0.3 %}
+                                    Negative
+                                {% else %}
+                                    Neutral
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Analysis generated on {{ prediction.created_at.strftime('%B %d, %Y') if prediction.created_at else 'N/A' }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sector Breakdown -->
+    {% if prediction.get_sector_breakdown() %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-industry me-2 text-primary"></i>
+                        Sector-wise Impact Breakdown
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for sector, impacts in prediction.get_sector_breakdown().items() %}
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <h6 class="fw-bold">{{ sector }}</h6>
+                                    <div class="mb-2">
+                                        <small class="text-muted">GDP Impact</small>
+                                        <div class="fw-bold {{ 'text-success' if impacts.gdp_impact > 0 else 'text-danger' }}">
+                                            {{ impacts.gdp_impact|round(2) }}%
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Employment</small>
+                                        <div class="fw-bold {{ 'text-success' if impacts.employment_impact > 0 else 'text-danger' }}">
+                                            {{ impacts.employment_impact|round(2) }}%
+                                        </div>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ impacts.impact_percentage }}%">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">{{ impacts.impact_percentage }}% of total impact</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Historical Comparisons -->
+    {% if similar_policies %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-history me-2 text-primary"></i>
+                        Similar Historical Policies
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Policy Name</th>
+                                    <th>Country</th>
+                                    <th>Year</th>
+                                    <th>GDP Impact</th>
+                                    <th>Inflation Impact</th>
+                                    <th>Unemployment Impact</th>
+                                    <th>Environmental Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for historical in similar_policies %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ historical.name }}</div>
+                                        {% if historical.description %}
+                                        <small class="text-muted">{{ historical.description[:60] }}...</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ historical.country }}</td>
+                                    <td>{{ historical.year_implemented }}</td>
+                                    <td>
+                                        <span class="badge {{ 'bg-success' if historical.actual_gdp_impact > 0 else 'bg-danger' }}">
+                                            {{ historical.actual_gdp_impact|round(2) }}%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {{ 'bg-warning' if historical.actual_inflation_impact > 0 else 'bg-info' }}">
+                                            {{ historical.actual_inflation_impact|round(2) }}pp
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {{ 'bg-danger' if historical.actual_unemployment_impact > 0 else 'bg-success' }}">
+                                            {{ historical.actual_unemployment_impact|round(2) }}pp
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {{ 'bg-danger' if historical.actual_environmental_impact > 0 else 'bg-success' }}">
+                                            {{ historical.actual_environmental_impact|round(2) }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                </a>
+                {% if prediction %}
+                <a href="{{ url_for('export_pdf', policy_id=policy.id) }}" class="btn btn-danger">
+                    <i class="fas fa-download me-1"></i>Download Full Report
+                </a>
+                {% endif %}
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Create New Simulation
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if prediction %}
+<script>
+// Impact comparison chart
+const ctx = document.getElementById('impactChart').getContext('2d');
+const impactChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['GDP Impact (%)', 'Inflation Impact (pp)', 'Unemployment Impact (pp)', 'Environmental Impact (%)'],
+        datasets: [{
+            label: 'Policy Impact',
+            data: [
+                {{ prediction.gdp_impact }},
+                {{ prediction.inflation_impact }},
+                {{ prediction.unemployment_impact }},
+                {{ prediction.environmental_impact }}
+            ],
+            backgroundColor: [
+                {{ prediction.gdp_impact }} > 0 ? '#28a745' : '#dc3545',
+                {{ prediction.inflation_impact }} > 0 ? '#ffc107' : '#17a2b8',
+                {{ prediction.unemployment_impact }} > 0 ? '#dc3545' : '#28a745',
+                {{ prediction.environmental_impact }} > 0 ? '#dc3545' : '#28a745'
+            ],
+            borderColor: [
+                {{ prediction.gdp_impact }} > 0 ? '#1e7e34' : '#bd2130',
+                {{ prediction.inflation_impact }} > 0 ? '#d39e00' : '#117a8b',
+                {{ prediction.unemployment_impact }} > 0 ? '#bd2130' : '#1e7e34',
+                {{ prediction.environmental_impact }} > 0 ? '#bd2130' : '#1e7e34'
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0,0,0,0.1)'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    afterLabel: function(context) {
+                        const index = context.dataIndex;
+                        const interpretations = [
+                            '{{ "Strong positive impact" if prediction.gdp_impact > 1 else "Positive impact" if prediction.gdp_impact > 0 else "Minimal impact" if prediction.gdp_impact > -1 else "Negative impact" }}',
+                            '{{ "Inflationary pressure" if prediction.inflation_impact > 0.5 else "Stable inflation" if prediction.inflation_impact > -0.5 else "Deflationary pressure" }}',
+                            '{{ "Job losses expected" if prediction.unemployment_impact > 0.5 else "Stable employment" if prediction.unemployment_impact > -0.5 else "Job creation expected" }}',
+                            '{{ "Environmental concern" if prediction.environmental_impact > 2 else "Neutral impact" if prediction.environmental_impact > -2 else "Environmental benefit" }}'
+                        ];
+                        return interpretations[index];
+                    }
+                }
+            }
+        }
+    }
+});
+</script>
+{% endif %}
+{% endblock %}
