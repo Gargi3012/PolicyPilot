@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}Home - India Policy Impact Simulator{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-gradient text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-brain me-3"></i>
+                    India Policy Impact Simulator
+                </h1>
+                <p class="lead mb-4">
+                    Predict the real-world economic and social impacts of Indian government policies using advanced machine learning models. 
+                    Analyze regional effects across India's states including GDP, inflation, unemployment, and environmental impacts.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#policy-form" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-play me-2"></i>Start Simulation
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-chart-bar me-2"></i>View Dashboard
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="hero-icon">
+                    <i class="fas fa-flag fa-8x opacity-75" style="color: #FF9933;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="fw-bold">Key Features</h2>
+            <p class="text-muted">Comprehensive policy analysis powered by AI</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card h-100 p-4 border rounded-3 shadow-sm">
+                <div class="text-center mb-3">
+                    <i class="fas fa-chart-line fa-3x text-primary"></i>
+                </div>
+                <h5 class="fw-bold">Indian Economic Impact Prediction</h5>
+                <p class="text-muted">
+                    Predict GDP growth, inflation rates, and unemployment changes across Indian regions with ML-powered models trained on Indian historical policy data.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card h-100 p-4 border rounded-3 shadow-sm">
+                <div class="text-center mb-3">
+                    <i class="fas fa-leaf fa-3x text-success"></i>
+                </div>
+                <h5 class="fw-bold">Environmental Analysis</h5>
+                <p class="text-muted">
+                    Assess environmental impacts including CO2 emissions and sustainability metrics for comprehensive policy evaluation.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card h-100 p-4 border rounded-3 shadow-sm">
+                <div class="text-center mb-3">
+                    <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                </div>
+                <h5 class="fw-bold">Detailed Reports</h5>
+                <p class="text-muted">
+                    Generate comprehensive PDF reports with visualizations, recommendations, and historical comparisons.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Policy Input Form -->
+    <div class="row justify-content-center" id="policy-form">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-cogs me-2"></i>
+                        Create Policy Simulation
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('simulate_policy') }}" class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="policy_name" class="form-label fw-bold">
+                                    <i class="fas fa-tag me-1"></i>Policy Name *
+                                </label>
+                                <input type="text" class="form-control" id="policy_name" name="policy_name" 
+                                       placeholder="Enter policy name" required>
+                                <div class="invalid-feedback">Please provide a policy name.</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="sector" class="form-label fw-bold">
+                                    <i class="fas fa-industry me-1"></i>Sector *
+                                </label>
+                                <select class="form-select" id="sector" name="sector" required>
+                                    <option value="">Select sector</option>
+                                    <option value="Energy">Energy</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Transportation">Transportation</option>
+                                    <option value="Agriculture">Agriculture</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a sector.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="region" class="form-label fw-bold">
+                                    <i class="fas fa-map-marker-alt me-1"></i>Indian Region *
+                                </label>
+                                <select class="form-select" id="region" name="region" required>
+                                    <option value="">Select Indian region</option>
+                                    <option value="Northern India">Northern India (Delhi, Punjab, Haryana, UP, Rajasthan)</option>
+                                    <option value="Western India">Western India (Maharashtra, Gujarat, Goa)</option>
+                                    <option value="Southern India">Southern India (Karnataka, Tamil Nadu, AP, Kerala, Telangana)</option>
+                                    <option value="Eastern India">Eastern India (West Bengal, Odisha, Jharkhand, Bihar)</option>
+                                    <option value="North-Eastern India">North-Eastern India (Assam, Meghalaya, Tripura, etc.)</option>
+                                    <option value="Central India">Central India (Madhya Pradesh, Chhattisgarh)</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a region.</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="numeric_change" class="form-label fw-bold">
+                                    <i class="fas fa-percentage me-1"></i>Numeric Change (%) *
+                                </label>
+                                <input type="number" class="form-control" id="numeric_change" name="numeric_change" 
+                                       step="0.1" min="-100" max="100" placeholder="e.g., 15.5" required>
+                                <div class="form-text">Enter percentage change (-100 to 100)</div>
+                                <div class="invalid-feedback">Please enter a valid percentage.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="time_period" class="form-label fw-bold">
+                                    <i class="fas fa-calendar me-1"></i>Time Period (months) *
+                                </label>
+                                <input type="number" class="form-control" id="time_period" name="time_period" 
+                                       min="1" max="120" value="12" required>
+                                <div class="form-text">Duration for policy analysis (1-120 months)</div>
+                                <div class="invalid-feedback">Please enter a valid time period.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="description" class="form-label fw-bold">
+                                <i class="fas fa-align-left me-1"></i>Policy Description
+                            </label>
+                            <textarea class="form-control" id="description" name="description" rows="3" 
+                                    placeholder="Describe the policy details and objectives (optional)"></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="reset" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-undo me-1"></i>Reset
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-rocket me-2"></i>Run Simulation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Policies Section -->
+    {% if recent_policies %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="fw-bold mb-4">
+                <i class="fas fa-history me-2"></i>Recent Simulations
+            </h3>
+            <div class="row">
+                {% for policy in recent_policies %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title fw-bold">{{ policy.name }}</h6>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-tag me-1"></i>{{ policy.sector }} | 
+                                    <i class="fas fa-globe me-1"></i>{{ policy.region }}
+                                </small>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    {{ policy.created_at.strftime('%m/%d/%Y') if policy.created_at else 'N/A' }}
+                                </small>
+                                <a href="{{ url_for('view_results', policy_id=policy.id) }}" class="btn btn-sm btn-outline-primary">
+                                    View Results
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+</script>
+{% endblock %}
