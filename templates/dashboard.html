@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Policy Impact Simulator{% endblock %}
+
+{% block head %}
+<style>
+.stat-card {
+    transition: transform 0.2s ease-in-out;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+.policy-row:hover {
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold text-dark">
+                <i class="fas fa-tachometer-alt me-2 text-primary"></i>
+                Policy Dashboard
+            </h1>
+            <p class="text-muted mb-0">Monitor and analyze policy simulations</p>
+        </div>
+        <div>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>New Simulation
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-primary mb-2">
+                        <i class="fas fa-file-alt fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark">{{ total_policies }}</h4>
+                    <p class="text-muted mb-0">Total Policies</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-success mb-2">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark">{{ "%.2f"|format(avg_gdp_impact) }}%</h4>
+                    <p class="text-muted mb-0">Avg GDP Impact</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-warning mb-2">
+                        <i class="fas fa-percentage fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark">{{ "%.2f"|format(avg_inflation_impact) }}pp</h4>
+                    <p class="text-muted mb-0">Avg Inflation Impact</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-info mb-2">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark">{{ "%.2f"|format(avg_unemployment_impact) }}pp</h4>
+                    <p class="text-muted mb-0">Avg Unemployment Impact</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie me-2 text-primary"></i>
+                        Policies by Sector
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="sectorChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2 text-primary"></i>
+                        Impact Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="impactChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Policies Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-list me-2 text-primary"></i>
+                All Policy Simulations
+            </h5>
+            <div class="d-flex gap-2">
+                <input type="text" class="form-control form-control-sm" id="searchInput" 
+                       placeholder="Search policies..." style="width: 200px;">
+                <select class="form-select form-select-sm" id="sectorFilter" style="width: 150px;">
+                    <option value="">All Sectors</option>
+                    <option value="Energy">Energy</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Education">Education</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Agriculture">Agriculture</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="policiesTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="fas fa-tag me-1"></i>Policy Name</th>
+                            <th><i class="fas fa-industry me-1"></i>Sector</th>
+                            <th><i class="fas fa-globe me-1"></i>Region</th>
+                            <th><i class="fas fa-percentage me-1"></i>Change</th>
+                            <th><i class="fas fa-chart-line me-1"></i>GDP Impact</th>
+                            <th><i class="fas fa-percentage me-1"></i>Inflation</th>
+                            <th><i class="fas fa-users me-1"></i>Unemployment</th>
+                            <th><i class="fas fa-calendar me-1"></i>Created</th>
+                            <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for policy in policies %}
+                        <tr class="policy-row">
+                            <td>
+                                <div class="fw-bold">{{ policy.name }}</div>
+                                {% if policy.description %}
+                                <small class="text-muted">{{ policy.description[:50] }}...</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ policy.sector }}</span>
+                            </td>
+                            <td>{{ policy.region }}</td>
+                            <td>
+                                <span class="badge {{ 'bg-success' if policy.numeric_change > 0 else 'bg-danger' }}">
+                                    {{ policy.numeric_change|round(1) }}%
+                                </span>
+                            </td>
+                            {% set prediction = policy.predictions[0] if policy.predictions else none %}
+                            <td>
+                                {% if prediction %}
+                                    <span class="badge {{ 'bg-success' if prediction.gdp_impact > 0 else 'bg-danger' }}">
+                                        {{ prediction.gdp_impact|round(2) }}%
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if prediction %}
+                                    <span class="badge {{ 'bg-warning' if prediction.inflation_impact > 0 else 'bg-info' }}">
+                                        {{ prediction.inflation_impact|round(2) }}pp
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if prediction %}
+                                    <span class="badge {{ 'bg-danger' if prediction.unemployment_impact > 0 else 'bg-success' }}">
+                                        {{ prediction.unemployment_impact|round(2) }}pp
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {{ policy.created_at.strftime('%m/%d/%Y') if policy.created_at else 'N/A' }}
+                                </small>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('view_results', policy_id=policy.id) }}" 
+                                       class="btn btn-sm btn-outline-primary" title="View Results">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    {% if prediction %}
+                                    <a href="{{ url_for('export_pdf', policy_id=policy.id) }}" 
+                                       class="btn btn-sm btn-outline-danger" title="Export PDF">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                                    <p>No policy simulations found</p>
+                                    <a href="{{ url_for('index') }}" class="btn btn-primary">Create First Simulation</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Policy Comparison Section -->
+    {% if policies|length > 1 %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-balance-scale me-2 text-primary"></i>
+                        Policy Comparison
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Select multiple policies to compare their predicted impacts side by side.</p>
+                    <form method="GET" action="{{ url_for('compare_policies') }}" id="compareForm">
+                        <div class="row">
+                            {% for policy in policies[:6] %}
+                            <div class="col-md-4 col-lg-2 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input compare-checkbox" type="checkbox" 
+                                           value="{{ policy.id }}" name="policies" id="policy{{ policy.id }}">
+                                    <label class="form-check-label small" for="policy{{ policy.id }}">
+                                        {{ policy.name[:20] }}...
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2" id="compareBtn" disabled>
+                            <i class="fas fa-balance-scale me-1"></i>Compare Selected
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Chart data preparation
+const policies = {{ policies|tojsonfilter|safe }};
+
+// Sector distribution chart
+const sectorCounts = {};
+policies.forEach(policy => {
+    sectorCounts[policy.sector] = (sectorCounts[policy.sector] || 0) + 1;
+});
+
+const sectorChart = new Chart(document.getElementById('sectorChart'), {
+    type: 'doughnut',
+    data: {
+        labels: Object.keys(sectorCounts),
+        datasets: [{
+            data: Object.values(sectorCounts),
+            backgroundColor: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Impact distribution chart
+const impactData = policies.filter(p => p.predictions && p.predictions.length > 0)
+                          .map(p => p.predictions[0]);
+
+if (impactData.length > 0) {
+    const gdpImpacts = impactData.map(p => p.gdp_impact || 0);
+    const inflationImpacts = impactData.map(p => p.inflation_impact || 0);
+    const unemploymentImpacts = impactData.map(p => p.unemployment_impact || 0);
+
+    const impactChart = new Chart(document.getElementById('impactChart'), {
+        type: 'bar',
+        data: {
+            labels: ['GDP Impact', 'Inflation Impact', 'Unemployment Impact'],
+            datasets: [{
+                label: 'Average Impact',
+                data: [
+                    gdpImpacts.reduce((a, b) => a + b, 0) / gdpImpacts.length,
+                    inflationImpacts.reduce((a, b) => a + b, 0) / inflationImpacts.length,
+                    unemploymentImpacts.reduce((a, b) => a + b, 0) / unemploymentImpacts.length
+                ],
+                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Search and filter functionality
+document.getElementById('searchInput').addEventListener('input', filterTable);
+document.getElementById('sectorFilter').addEventListener('change', filterTable);
+
+function filterTable() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const sectorFilter = document.getElementById('sectorFilter').value;
+    const rows = document.querySelectorAll('#policiesTable tbody tr');
+    
+    rows.forEach(row => {
+        const policyName = row.cells[0].textContent.toLowerCase();
+        const sector = row.cells[1].textContent;
+        
+        const matchesSearch = policyName.includes(searchTerm);
+        const matchesSector = !sectorFilter || sector.includes(sectorFilter);
+        
+        row.style.display = matchesSearch && matchesSector ? '' : 'none';
+    });
+}
+
+// Policy comparison functionality
+const compareCheckboxes = document.querySelectorAll('.compare-checkbox');
+const compareBtn = document.getElementById('compareBtn');
+
+compareCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', updateCompareButton);
+});
+
+function updateCompareButton() {
+    const selectedCount = document.querySelectorAll('.compare-checkbox:checked').length;
+    compareBtn.disabled = selectedCount < 2;
+    compareBtn.textContent = `Compare Selected (${selectedCount})`;
+}
+</script>
+{% endblock %}
