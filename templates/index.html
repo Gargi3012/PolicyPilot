@@ -1,178 +1,318 @@
 {% extends "base.html" %}
 
-{% block title %}Home - India Policy Impact Simulator{% endblock %}
+{% block title %}NitiSim - Indian Policy Impact Simulator | AI-Powered Policy Analytics{% endblock %}
 
 {% block content %}
-<div class="hero-section bg-gradient text-white py-5">
+<!-- Modern Hero Section -->
+<section class="hero-section">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1 class="display-4 fw-bold mb-4">
-                    <i class="fas fa-brain me-3"></i>
-                    India Policy Impact Simulator
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-7">
+                <div class="hero-pill">
+                    <i class="fas fa-microchip"></i>
+                    <span>AI-Powered Policy Modeling Platform</span>
+                </div>
+                <h1 class="hero-title">
+                    Indian Policy Impact Simulator
                 </h1>
-                <p class="lead mb-4">
-                    Predict the real-world economic and social impacts of Indian government policies using advanced machine learning models. 
-                    Analyze regional effects across India's states including GDP, inflation, unemployment, and environmental impacts.
+                <p class="hero-subtitle">
+                    Simulate and forecast the real-world macroeconomic, regional, and environmental impacts of government policy interventions across India's states using advanced machine learning models trained on historical economic indicators.
                 </p>
-                <div class="d-flex gap-3">
-                    <a href="#policy-form" class="btn btn-light btn-lg px-4">
-                        <i class="fas fa-play me-2"></i>Start Simulation
+                <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
+                    <a href="#policy-form" class="btn btn-emerald btn-lg shadow-sm">
+                        <i class="fas fa-play-circle me-1"></i>Start Simulation
                     </a>
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-lg px-4">
-                        <i class="fas fa-chart-bar me-2"></i>View Dashboard
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-chart-line me-1"></i>View Dashboard
                     </a>
                 </div>
+                <div class="d-flex flex-wrap gap-4 pt-2 text-muted small">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-check-circle text-primary-green"></i>
+                        <span class="text-secondary">6 Macro Regions Covered</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-check-circle text-primary-green"></i>
+                        <span class="text-secondary">Multi-Sector Predictor</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-check-circle text-primary-green"></i>
+                        <span class="text-secondary">Auditable PDF Dossiers</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4 text-center">
-                <div class="hero-icon">
-                    <i class="fas fa-flag fa-8x opacity-75" style="color: #FF9933;"></i>
+
+            <!-- Subtle, Relevant Visual Element: Analytics Live Preview Widget -->
+            <div class="col-lg-5">
+                <div class="hero-preview-card">
+                    <div class="hero-preview-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge-pill-sage">
+                                <i class="fas fa-bolt text-success me-1"></i> ML Engine Live
+                            </span>
+                            <span class="text-muted small fw-semibold">National Baseline 2025-26</span>
+                        </div>
+                        <span class="text-muted small">
+                            <i class="fas fa-shield-alt text-success me-1"></i> Calibrated
+                        </span>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="hero-preview-metric">
+                                <div class="lbl">Predicted GDP Impact</div>
+                                <div class="val text-dark-green d-flex align-items-baseline gap-1 mt-1">
+                                    <span>+1.85%</span>
+                                    <small class="text-success small fs-6"><i class="fas fa-arrow-trend-up"></i></small>
+                                </div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Annualized trajectory</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="hero-preview-metric">
+                                <div class="lbl">Inflation Shift</div>
+                                <div class="val text-primary d-flex align-items-baseline gap-1 mt-1">
+                                    <span>+0.28 pp</span>
+                                    <small class="text-warning small fs-6"><i class="fas fa-minus"></i></small>
+                                </div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Within RBI target band</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="hero-preview-metric">
+                                <div class="lbl">Employment Creation</div>
+                                <div class="val text-dark-green d-flex align-items-baseline gap-1 mt-1">
+                                    <span>-0.42 pp</span>
+                                    <small class="text-success small fs-6"><i class="fas fa-arrow-trend-down"></i></small>
+                                </div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Unemployment reduction</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="hero-preview-metric">
+                                <div class="lbl">Environmental Factor</div>
+                                <div class="val text-success d-flex align-items-baseline gap-1 mt-1">
+                                    <span>-3.20%</span>
+                                    <small class="text-success small fs-6"><i class="fas fa-leaf"></i></small>
+                                </div>
+                                <div class="text-muted" style="font-size: 0.72rem;">CO₂ emissions index</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-2 rounded bg-light border border-light-subtle d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-map-pin text-primary-green"></i>
+                            <span class="small fw-semibold text-dark">Regional Dispersion Analysis</span>
+                        </div>
+                        <span class="badge bg-primary">All 6 Indian Zones</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
+<!-- Main Container -->
 <div class="container py-5">
-    <!-- Features Section -->
+    <!-- Key Platform Features Section -->
     <div class="row mb-5">
         <div class="col-12 text-center mb-4">
-            <h2 class="fw-bold">Key Features</h2>
-            <p class="text-muted">Comprehensive policy analysis powered by AI</p>
+            <span class="badge-pill-sage mb-2">Core Capabilities</span>
+            <h2 class="fw-bold mb-2">Built for Rigorous Policy Decision-Making</h2>
+            <p class="text-secondary mx-auto" style="max-width: 620px;">
+                Combining econometric baselines, state-level data feeds, and supervised machine learning algorithms to project multi-dimensional outcomes.
+            </p>
         </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="feature-card h-100 p-4 border rounded-3 shadow-sm">
-                <div class="text-center mb-3">
-                    <i class="fas fa-chart-line fa-3x text-primary"></i>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="fas fa-chart-line"></i>
                 </div>
-                <h5 class="fw-bold">Indian Economic Impact Prediction</h5>
-                <p class="text-muted">
-                    Predict GDP growth, inflation rates, and unemployment changes across Indian regions with ML-powered models trained on Indian historical policy data.
+                <h3 class="feature-title">Economic Impact Modeling</h3>
+                <p class="feature-desc">
+                    Evaluate real-time forecast impacts on Gross Domestic Product (GDP), inflation rates, and employment generation per sector.
                 </p>
             </div>
         </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="feature-card h-100 p-4 border rounded-3 shadow-sm">
-                <div class="text-center mb-3">
-                    <i class="fas fa-leaf fa-3x text-success"></i>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="fas fa-map-location-dot"></i>
                 </div>
-                <h5 class="fw-bold">Environmental Analysis</h5>
-                <p class="text-muted">
-                    Assess environmental impacts including CO2 emissions and sustainability metrics for comprehensive policy evaluation.
+                <h3 class="feature-title">Regional Granularity</h3>
+                <p class="feature-desc">
+                    Tailored for India's 6 macro regions (Northern, Western, Southern, Eastern, North-Eastern, Central) taking into account state disparities.
                 </p>
             </div>
         </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="feature-card h-100 p-4 border rounded-3 shadow-sm">
-                <div class="text-center mb-3">
-                    <i class="fas fa-file-pdf fa-3x text-danger"></i>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="fas fa-leaf"></i>
                 </div>
-                <h5 class="fw-bold">Detailed Reports</h5>
-                <p class="text-muted">
-                    Generate comprehensive PDF reports with visualizations, recommendations, and historical comparisons.
+                <h3 class="feature-title">Environmental Metrics</h3>
+                <p class="feature-desc">
+                    Quantify policy trade-offs on carbon emissions, green transition readiness, and environmental sustainability indices.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="fas fa-file-invoice"></i>
+                </div>
+                <h3 class="feature-title">Auditable PDF Reports</h3>
+                <p class="feature-desc">
+                    Export high-fidelity policy dossiers with confidence intervals, sector breakdowns, and historical benchmark comparisons.
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- Policy Input Form -->
-    <div class="row justify-content-center" id="policy-form">
-        <div class="col-lg-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white py-3">
-                    <h3 class="card-title mb-0">
-                        <i class="fas fa-cogs me-2"></i>
-                        Create Policy Simulation
-                    </h3>
+    <!-- Redesigned Policy Simulation Input Form -->
+    <div class="row justify-content-center mb-5" id="policy-form">
+        <div class="col-lg-10">
+            <div class="card form-card">
+                <div class="card-header bg-white border-bottom py-3 px-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h3 class="card-title fw-bold text-dark d-flex align-items-center gap-2 mb-1">
+                                <i class="fas fa-sliders-h text-primary-green"></i>
+                                Configure Policy Simulation
+                            </h3>
+                            <p class="text-secondary small mb-0">
+                                Define policy parameters, target economic sector, geographical scope, and intervention magnitude.
+                            </p>
+                        </div>
+                        <span class="badge-pill-sage d-none d-md-inline-flex">
+                            <i class="fas fa-circle-info me-1"></i> ML Supervised Model
+                        </span>
+                    </div>
                 </div>
+
                 <div class="card-body p-4">
                     <form method="POST" action="{{ url_for('simulate_policy') }}" class="needs-validation" novalidate>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="policy_name" class="form-label fw-bold">
-                                    <i class="fas fa-tag me-1"></i>Policy Name *
-                                </label>
-                                <input type="text" class="form-control" id="policy_name" name="policy_name" 
-                                       placeholder="Enter policy name" required>
-                                <div class="invalid-feedback">Please provide a policy name.</div>
+                        
+                        <!-- Group 1: Policy Identification -->
+                        <div class="form-group-section">
+                            <div class="form-group-title">
+                                <i class="fas fa-file-signature"></i>
+                                <span>1. Policy Identification & Scope</span>
                             </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label for="sector" class="form-label fw-bold">
-                                    <i class="fas fa-industry me-1"></i>Sector *
-                                </label>
-                                <select class="form-select" id="sector" name="sector" required>
-                                    <option value="">Select sector</option>
-                                    <option value="Energy">Energy</option>
-                                    <option value="Healthcare">Healthcare</option>
-                                    <option value="Education">Education</option>
-                                    <option value="Transportation">Transportation</option>
-                                    <option value="Agriculture">Agriculture</option>
-                                    <option value="Finance">Finance</option>
-                                    <option value="Technology">Technology</option>
-                                    <option value="Manufacturing">Manufacturing</option>
-                                </select>
-                                <div class="invalid-feedback">Please select a sector.</div>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="policy_name" class="form-label">
+                                        <i class="fas fa-tag"></i> Policy Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="policy_name" name="policy_name" 
+                                           placeholder="e.g., National Solar Rooftop & Green Mobility Incentive 2026" required>
+                                    <div class="invalid-feedback">Please provide a descriptive policy title.</div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="description" class="form-label">
+                                        <i class="fas fa-align-left"></i> Policy Brief & Objectives <span class="text-muted fw-normal">(Optional)</span>
+                                    </label>
+                                    <textarea class="form-control" id="description" name="description" rows="2" 
+                                              placeholder="Summarize the core fiscal or regulatory mechanisms, subsidies, and intended outcomes..."></textarea>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="region" class="form-label fw-bold">
-                                    <i class="fas fa-map-marker-alt me-1"></i>Indian Region *
-                                </label>
-                                <select class="form-select" id="region" name="region" required>
-                                    <option value="">Select Indian region</option>
-                                    <option value="Northern India">Northern India (Delhi, Punjab, Haryana, UP, Rajasthan)</option>
-                                    <option value="Western India">Western India (Maharashtra, Gujarat, Goa)</option>
-                                    <option value="Southern India">Southern India (Karnataka, Tamil Nadu, AP, Kerala, Telangana)</option>
-                                    <option value="Eastern India">Eastern India (West Bengal, Odisha, Jharkhand, Bihar)</option>
-                                    <option value="North-Eastern India">North-Eastern India (Assam, Meghalaya, Tripura, etc.)</option>
-                                    <option value="Central India">Central India (Madhya Pradesh, Chhattisgarh)</option>
-                                </select>
-                                <div class="invalid-feedback">Please select a region.</div>
+
+                        <!-- Group 2: Sector & Regional Jurisdiction -->
+                        <div class="form-group-section">
+                            <div class="form-group-title">
+                                <i class="fas fa-sitemap"></i>
+                                <span>2. Sectoral & Geographical Focus</span>
                             </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label for="numeric_change" class="form-label fw-bold">
-                                    <i class="fas fa-percentage me-1"></i>Numeric Change (%) *
-                                </label>
-                                <input type="number" class="form-control" id="numeric_change" name="numeric_change" 
-                                       step="0.1" min="-100" max="100" placeholder="e.g., 15.5" required>
-                                <div class="form-text">Enter percentage change (-100 to 100)</div>
-                                <div class="invalid-feedback">Please enter a valid percentage.</div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="sector" class="form-label">
+                                        <i class="fas fa-industry"></i> Economic Sector <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="sector" name="sector" required>
+                                        <option value="" disabled selected>Choose target sector...</option>
+                                        <option value="Energy">Energy & Power</option>
+                                        <option value="Healthcare">Healthcare & Life Sciences</option>
+                                        <option value="Education">Education & Skill Development</option>
+                                        <option value="Transportation">Transportation & Logistics</option>
+                                        <option value="Agriculture">Agriculture & Rural Economy</option>
+                                        <option value="Finance">Finance & Banking</option>
+                                        <option value="Technology">Technology & Digital Services</option>
+                                        <option value="Manufacturing">Manufacturing & Industrial</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a primary sector.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="region" class="form-label">
+                                        <i class="fas fa-map-marker-alt"></i> Indian Region <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="region" name="region" required>
+                                        <option value="" disabled selected>Select geographical region...</option>
+                                        <option value="Northern India">Northern India (Delhi, Punjab, Haryana, UP, Rajasthan)</option>
+                                        <option value="Western India">Western India (Maharashtra, Gujarat, Goa)</option>
+                                        <option value="Southern India">Southern India (Karnataka, Tamil Nadu, AP, Kerala, Telangana)</option>
+                                        <option value="Eastern India">Eastern India (West Bengal, Odisha, Jharkhand, Bihar)</option>
+                                        <option value="North-Eastern India">North-Eastern India (Assam, Meghalaya, Tripura, etc.)</option>
+                                        <option value="Central India">Central India (Madhya Pradesh, Chhattisgarh)</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please specify the Indian target region.</div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="time_period" class="form-label fw-bold">
-                                    <i class="fas fa-calendar me-1"></i>Time Period (months) *
-                                </label>
-                                <input type="number" class="form-control" id="time_period" name="time_period" 
-                                       min="1" max="120" value="12" required>
-                                <div class="form-text">Duration for policy analysis (1-120 months)</div>
-                                <div class="invalid-feedback">Please enter a valid time period.</div>
+
+                        <!-- Group 3: Economic Parameters & Levers -->
+                        <div class="form-group-section">
+                            <div class="form-group-title">
+                                <i class="fas fa-calculator"></i>
+                                <span>3. Policy Levers & Intervention Parameters</span>
+                            </div>
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-6">
+                                    <label for="numeric_change" class="form-label d-flex justify-content-between align-items-center">
+                                        <span><i class="fas fa-percentage"></i> Policy Magnitude Change (%) <span class="text-danger">*</span></span>
+                                        <span class="badge bg-primary" id="changeIndicator">0.0%</span>
+                                    </label>
+                                    <input type="number" class="form-control" id="numeric_change" name="numeric_change" 
+                                           step="0.1" min="-100" max="100" placeholder="e.g., 20.0 (or -15.5)" required>
+                                    <div class="form-text">
+                                        Fiscal stimulus, tax adjustment, or expenditure delta (-100% to +100%).
+                                    </div>
+                                    <div class="invalid-feedback">Enter a valid percentage change between -100 and +100.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="time_period" class="form-label">
+                                        <i class="fas fa-calendar-alt"></i> Implementation Horizon (Months) <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="time_period" name="time_period" 
+                                               min="1" max="120" value="12" required>
+                                        <span class="input-group-text bg-light text-muted">Months</span>
+                                    </div>
+                                    <div class="d-flex gap-2 mt-2">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 quick-duration" data-months="12">1 Year</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 quick-duration" data-months="24">2 Years</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 quick-duration" data-months="36">3 Years</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 quick-duration" data-months="60">5 Years</button>
+                                    </div>
+                                    <div class="invalid-feedback">Enter an evaluation horizon between 1 and 120 months.</div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="mb-4">
-                            <label for="description" class="form-label fw-bold">
-                                <i class="fas fa-align-left me-1"></i>Policy Description
-                            </label>
-                            <textarea class="form-control" id="description" name="description" rows="3" 
-                                    placeholder="Describe the policy details and objectives (optional)"></textarea>
-                        </div>
-                        
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button type="reset" class="btn btn-outline-secondary me-md-2">
-                                <i class="fas fa-undo me-1"></i>Reset
+
+                        <!-- Form Actions -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center pt-2 gap-3">
+                            <button type="reset" class="btn btn-outline-secondary" id="resetBtn">
+                                <i class="fas fa-rotate-left me-1"></i>Reset Parameters
                             </button>
-                            <button type="submit" class="btn btn-primary btn-lg px-4">
-                                <i class="fas fa-rocket me-2"></i>Run Simulation
+                            <button type="submit" class="btn btn-emerald btn-lg px-4 shadow-sm">
+                                <i class="fas fa-rocket me-2"></i>Run Simulation & Generate Forecast
                             </button>
                         </div>
                     </form>
@@ -181,31 +321,52 @@
         </div>
     </div>
 
-    <!-- Recent Policies Section -->
+    <!-- Redesigned Recent Simulations Section -->
     {% if recent_policies %}
     <div class="row mt-5">
         <div class="col-12">
-            <h3 class="fw-bold mb-4">
-                <i class="fas fa-history me-2"></i>Recent Simulations
-            </h3>
-            <div class="row">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="fw-bold mb-1">
+                        <i class="fas fa-history text-primary-green me-2"></i>Recent Simulations
+                    </h3>
+                    <p class="text-secondary small mb-0">Browse recently executed policy forecasts and inspect predicted outcomes.</p>
+                </div>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-outline-primary">
+                    View All in Dashboard <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="row g-3">
                 {% for policy in recent_policies %}
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h6 class="card-title fw-bold">{{ policy.name }}</h6>
-                            <p class="card-text">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-industry me-1"></i>{{ policy.sector }}
+                                    </span>
+                                    <span class="badge {{ 'bg-success' if policy.numeric_change > 0 else 'bg-danger' }}">
+                                        {{ policy.numeric_change|round(1) }}% Change
+                                    </span>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-1" style="font-size: 1rem; line-height: 1.35;">
+                                    {{ policy.name }}
+                                </h5>
+                                <p class="text-secondary small mb-3">
+                                    <i class="fas fa-map-marker-alt text-primary-green me-1"></i>{{ policy.region }} &bull; {{ policy.time_period }} mos
+                                </p>
+                            </div>
+                            
+                            <div class="pt-2 border-top d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    <i class="fas fa-tag me-1"></i>{{ policy.sector }} | 
-                                    <i class="fas fa-globe me-1"></i>{{ policy.region }}
-                                </small>
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    {{ policy.created_at.strftime('%m/%d/%Y') if policy.created_at else 'N/A' }}
+                                    <i class="far fa-calendar-alt me-1"></i>
+                                    {{ policy.created_at.strftime('%d %b %Y') if policy.created_at else 'N/A' }}
                                 </small>
                                 <a href="{{ url_for('view_results', policy_id=policy.id) }}" class="btn btn-sm btn-outline-primary">
-                                    View Results
+                                    <span>View Results</span>
+                                    <i class="fas fa-arrow-right ms-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -217,31 +378,65 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script>
-// Form validation
-(function() {
-    'use strict';
-    window.addEventListener('load', function() {
-        var forms = document.getElementsByClassName('needs-validation');
-        var validation = Array.prototype.filter.call(forms, function(form) {
-            form.addEventListener('submit', function(event) {
-                if (form.checkValidity() === false) {
-                    event.preventDefault();
-                    event.stopPropagation();
+// Dynamic change indicator & preset durations
+document.addEventListener('DOMContentLoaded', function() {
+    const numChangeInput = document.getElementById('numeric_change');
+    const changeIndicator = document.getElementById('changeIndicator');
+    
+    if (numChangeInput && changeIndicator) {
+        numChangeInput.addEventListener('input', function() {
+            const val = parseFloat(this.value);
+            if (!isNaN(val)) {
+                changeIndicator.textContent = (val > 0 ? '+' : '') + val.toFixed(1) + '%';
+                if (val > 0) {
+                    changeIndicator.className = 'badge bg-success';
+                } else if (val < 0) {
+                    changeIndicator.className = 'badge bg-danger';
+                } else {
+                    changeIndicator.className = 'badge bg-secondary';
                 }
-                form.classList.add('was-validated');
-            }, false);
+            } else {
+                changeIndicator.textContent = '0.0%';
+                changeIndicator.className = 'badge bg-primary';
+            }
         });
-    }, false);
-})();
+    }
 
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
+    // Quick duration buttons
+    document.querySelectorAll('.quick-duration').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const months = this.getAttribute('data-months');
+            document.getElementById('time_period').value = months;
+        });
+    });
+
+    // Form validation
+    const forms = document.getElementsByClassName('needs-validation');
+    Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         });
     });
 });
