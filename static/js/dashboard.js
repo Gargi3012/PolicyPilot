@@ -1,21 +1,16 @@
 /**
- * Policy Impact Simulator - Dashboard JavaScript
- * Handles dashboard interactions, data visualization, and user interface functionality
+ * Indian Policy Impact Simulator - Professional Dashboard Module
+ * Handles table search, sorting, filtering, and chart visualizations
  */
 
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
-    // Global variables
     let charts = {};
     let dashboardData = {};
-    
-    // Initialize dashboard
+
     initDashboard();
 
-    /**
-     * Initialize dashboard functionality
-     */
     function initDashboard() {
         setupEventListeners();
         loadDashboardData();
@@ -24,49 +19,32 @@ document.addEventListener('DOMContentLoaded', function() {
         setupPolicyComparison();
     }
 
-    /**
-     * Setup event listeners for dashboard interactions
-     */
     function setupEventListeners() {
-        // Search functionality
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
-            searchInput.addEventListener('input', debounce(handleSearch, 300));
+            searchInput.addEventListener('input', debounce(handleSearch, 200));
         }
 
-        // Sector filter
         const sectorFilter = document.getElementById('sectorFilter');
         if (sectorFilter) {
             sectorFilter.addEventListener('change', handleSectorFilter);
         }
 
-        // Export buttons
-        setupExportButtons();
-
-        // Refresh data button
         const refreshBtn = document.getElementById('refreshData');
         if (refreshBtn) {
-            refreshBtn.addEventListener('click', refreshDashboardData);
+            refreshBtn.addEventListener('click', function() {
+                window.location.reload();
+            });
         }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', handleKeyboardShortcuts);
     }
 
-    /**
-     * Load dashboard data from server
-     */
     function loadDashboardData() {
-        showLoading();
-        
-        // In a real implementation, this would fetch from an API
-        // For now, we'll use the data already loaded in the template
         const policiesTable = document.getElementById('policiesTable');
         if (policiesTable) {
             const rows = policiesTable.querySelectorAll('tbody tr');
             dashboardData.policies = Array.from(rows).map(row => {
                 const cells = row.querySelectorAll('td');
-                if (cells.length > 1) {
+                if (cells.length > 4) {
                     return {
                         name: cells[0].textContent.trim(),
                         sector: cells[1].textContent.trim(),
@@ -80,91 +58,99 @@ document.addEventListener('DOMContentLoaded', function() {
                 return null;
             }).filter(policy => policy !== null);
         }
-        
-        hideLoading();
     }
 
-    /**
-     * Initialize charts on the dashboard
-     */
     function initializeCharts() {
-        // Only initialize charts if we have data
         if (!dashboardData.policies || dashboardData.policies.length === 0) {
             return;
         }
-
-        // Sector distribution chart
         initSectorChart();
-        
-        // Impact distribution chart
         initImpactChart();
-        
-        // Trend chart (if element exists)
-        initTrendChart();
     }
 
-    /**
-     * Initialize sector distribution chart
-     */
     function initSectorChart() {
         const sectorChartCanvas = document.getElementById('sectorChart');
         if (!sectorChartCanvas) return;
 
+        // Count policies per sector
         const sectorCounts = {};
         dashboardData.policies.forEach(policy => {
             const sector = policy.sector.replace(/[^\w\s]/gi, '').trim();
-            sectorCounts[sector] = (sectorCounts[sector] || 0) + 1;
+            if (sector) {
+                sectorCounts[sector] = (sectorCounts[sector] || 0) + 1;
+            }
         });
 
+        if (Object.keys(sectorCounts).length === 0) return;
+
+        // Destroy existing instance if present
+        if (window.sectorChartInstance) {
+            window.sectorChartInstance.destroy();
+        }
+
         const ctx = sectorChartCanvas.getContext('2d');
-        charts.sectorChart = new Chart(ctx, {
+        const colors = [
+            '#16834A', // Emerald
+            '#0D9488', // Teal
+            '#2563EB', // Blue-slate
+            '#D97706', // Amber
+            '#15803D', // Forest
+            '#059669', // Mint
+            '#475569', // Slate
+            '#64746A'  // Charcoal
+        ];
+
+        window.sectorChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: Object.keys(sectorCounts),
                 datasets: [{
                     data: Object.values(sectorCounts),
-                    backgroundColor: [
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                        '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
-                    ],
+                    backgroundColor: colors.slice(0, Object.keys(sectorCounts).length),
                     borderWidth: 2,
-                    borderColor: '#fff'
+                    borderColor: '#FFFFFF',
+                    hoverOffset: 4
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '70%',
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            padding: 15,
-                            usePointStyle: true
+                            padding: 14,
+                            usePointStyle: true,
+                            boxWidth: 8,
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            },
+                            color: '#1B2B22'
                         }
                     },
                     tooltip: {
+                        backgroundColor: '#FFFFFF',
+                        titleColor: '#1B2B22',
+                        bodyColor: '#64746A',
+                        borderColor: '#E3EBE5',
+                        borderWidth: 1,
+                        padding: 10,
+                        boxPadding: 4,
                         callbacks: {
                             label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed;
                                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return `${label}: ${value} policies (${percentage}%)`;
+                                const pct = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                return ` ${context.label}: ${context.parsed} (${pct}%)`;
                             }
                         }
                     }
-                },
-                animation: {
-                    animateRotate: true,
-                    duration: 1000
                 }
             }
         });
     }
 
-    /**
-     * Initialize impact distribution chart
-     */
     function initImpactChart() {
         const impactChartCanvas = document.getElementById('impactChart');
         if (!impactChartCanvas) return;
@@ -179,26 +165,30 @@ document.addEventListener('DOMContentLoaded', function() {
         const avgInflation = inflationImpacts.reduce((a, b) => a + b, 0) / inflationImpacts.length;
         const avgUnemployment = unemploymentImpacts.reduce((a, b) => a + b, 0) / unemploymentImpacts.length;
 
+        // Destroy existing instance if present
+        if (window.impactChartInstance) {
+            window.impactChartInstance.destroy();
+        }
+
         const ctx = impactChartCanvas.getContext('2d');
-        charts.impactChart = new Chart(ctx, {
+        window.impactChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['GDP Impact (%)', 'Inflation Impact (pp)', 'Unemployment Impact (pp)'],
+                labels: ['Avg GDP Impact (%)', 'Avg Inflation (pp)', 'Avg Unemployment (pp)'],
                 datasets: [{
-                    label: 'Average Impact',
-                    data: [avgGDP, avgInflation, avgUnemployment],
+                    label: 'Mean Projected Impact',
+                    data: [
+                        parseFloat(avgGDP.toFixed(2)),
+                        parseFloat(avgInflation.toFixed(2)),
+                        parseFloat(avgUnemployment.toFixed(2))
+                    ],
                     backgroundColor: [
-                        avgGDP >= 0 ? '#28a745' : '#dc3545',
-                        Math.abs(avgInflation) < 0.5 ? '#17a2b8' : '#ffc107',
-                        avgUnemployment <= 0 ? '#28a745' : '#dc3545'
+                        avgGDP >= 0 ? '#16834A' : '#DC2626',
+                        '#D97706',
+                        avgUnemployment <= 0 ? '#16834A' : '#DC2626'
                     ],
-                    borderColor: [
-                        avgGDP >= 0 ? '#1e7e34' : '#bd2130',
-                        Math.abs(avgInflation) < 0.5 ? '#117a8b' : '#d39e00',
-                        avgUnemployment <= 0 ? '#1e7e34' : '#bd2130'
-                    ],
-                    borderWidth: 2,
-                    borderRadius: 6
+                    borderRadius: 6,
+                    maxBarThickness: 50
                 }]
             },
             options: {
@@ -208,17 +198,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
+                            color: '#EEF4F0',
+                            drawBorder: false
                         },
                         ticks: {
-                            callback: function(value) {
-                                return value.toFixed(2);
-                            }
+                            color: '#64746A',
+                            font: { size: 11 }
                         }
                     },
                     x: {
                         grid: {
                             display: false
+                        },
+                        ticks: {
+                            color: '#1B2B22',
+                            font: { size: 12, weight: '600' }
                         }
                     }
                 },
@@ -227,206 +221,107 @@ document.addEventListener('DOMContentLoaded', function() {
                         display: false
                     },
                     tooltip: {
+                        backgroundColor: '#FFFFFF',
+                        titleColor: '#1B2B22',
+                        bodyColor: '#64746A',
+                        borderColor: '#E3EBE5',
+                        borderWidth: 1,
+                        padding: 10,
                         callbacks: {
-                            afterLabel: function(context) {
-                                const interpretations = [
-                                    avgGDP > 1 ? 'Strong positive impact' : avgGDP > 0 ? 'Positive impact' : 'Negative impact',
-                                    Math.abs(avgInflation) < 0.5 ? 'Stable inflation' : 'Inflation concern',
-                                    avgUnemployment <= 0 ? 'Job creation expected' : 'Potential job losses'
-                                ];
-                                return interpretations[context.dataIndex];
+                            label: function(context) {
+                                const unit = context.dataIndex === 0 ? '%' : 'pp';
+                                return ` ${context.parsed.y > 0 ? '+' : ''}${context.parsed.y}${unit}`;
                             }
                         }
                     }
-                },
-                animation: {
-                    duration: 1500,
-                    easing: 'easeOutBounce'
                 }
             }
         });
     }
 
-    /**
-     * Initialize trend chart if data is available
-     */
-    function initTrendChart() {
-        const trendChartCanvas = document.getElementById('trendChart');
-        if (!trendChartCanvas) return;
-
-        // This would typically show trends over time
-        // For demo purposes, we'll create a simple trend visualization
-        const ctx = trendChartCanvas.getContext('2d');
-        charts.trendChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Policy Simulations',
-                    data: [2, 4, 3, 5, 6, 4],
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * Setup table functionality (search, filter, sort)
-     */
     function setupTableFunctionality() {
         const table = document.getElementById('policiesTable');
         if (!table) return;
 
-        // Make table sortable
         setupTableSort(table);
-        
-        // Setup row click handlers
-        setupTableRowHandlers(table);
     }
 
-    /**
-     * Setup table sorting functionality
-     */
     function setupTableSort(table) {
         const headers = table.querySelectorAll('thead th');
         headers.forEach((header, index) => {
             if (index < headers.length - 1) { // Exclude actions column
                 header.style.cursor = 'pointer';
                 header.addEventListener('click', () => sortTable(table, index));
-                
-                // Add sort icon
-                const icon = document.createElement('i');
-                icon.className = 'fas fa-sort ms-1 text-muted';
-                header.appendChild(icon);
             }
         });
     }
 
-    /**
-     * Sort table by column
-     */
     function sortTable(table, columnIndex) {
         const tbody = table.querySelector('tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const rows = Array.from(tbody.querySelectorAll('tr:not(.no-results-row)'));
         const header = table.querySelectorAll('thead th')[columnIndex];
-        const icon = header.querySelector('i');
-        
-        // Determine sort direction
+        if (!header) return;
+
         const isAscending = !header.classList.contains('sort-desc');
-        
-        // Reset all sort icons
-        table.querySelectorAll('thead th i').forEach(i => {
-            i.className = 'fas fa-sort ms-1 text-muted';
+
+        table.querySelectorAll('thead th').forEach(th => {
+            th.classList.remove('sort-asc', 'sort-desc');
         });
-        
-        // Update current sort icon
-        icon.className = `fas fa-sort-${isAscending ? 'up' : 'down'} ms-1 text-primary`;
+
         header.classList.toggle('sort-desc', !isAscending);
-        
-        // Sort rows
+        header.classList.toggle('sort-asc', isAscending);
+
         rows.sort((a, b) => {
-            const aValue = a.cells[columnIndex].textContent.trim();
-            const bValue = b.cells[columnIndex].textContent.trim();
-            
-            // Handle numeric values
-            if (!isNaN(parseFloat(aValue)) && !isNaN(parseFloat(bValue))) {
-                return isAscending ? 
-                    parseFloat(aValue) - parseFloat(bValue) : 
-                    parseFloat(bValue) - parseFloat(aValue);
+            const aCell = a.cells[columnIndex];
+            const bCell = b.cells[columnIndex];
+            if (!aCell || !bCell) return 0;
+
+            const aText = aCell.textContent.trim();
+            const bText = bCell.textContent.trim();
+
+            const aNum = parseFloat(aText.replace(/[^0-9.-]/g, ''));
+            const bNum = parseFloat(bText.replace(/[^0-9.-]/g, ''));
+
+            if (!isNaN(aNum) && !isNaN(bNum) && !aText.includes('/')) {
+                return isAscending ? aNum - bNum : bNum - aNum;
             }
-            
-            // Handle text values
-            return isAscending ? 
-                aValue.localeCompare(bValue) : 
-                bValue.localeCompare(aValue);
+            return isAscending ? aText.localeCompare(bText) : bText.localeCompare(aText);
         });
-        
-        // Re-append sorted rows
+
         rows.forEach(row => tbody.appendChild(row));
     }
 
-    /**
-     * Setup table row click handlers
-     */
-    function setupTableRowHandlers(table) {
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            // Skip empty state row
-            if (row.cells.length === 1) return;
-            
-            row.addEventListener('click', function(e) {
-                // Don't trigger on button clicks
-                if (e.target.closest('.btn')) return;
-                
-                // Highlight selected row
-                table.querySelectorAll('tbody tr').forEach(r => r.classList.remove('table-primary'));
-                this.classList.add('table-primary');
-                
-                // Extract policy ID and navigate (if view button exists)
-                const viewBtn = this.querySelector('a[href*="results"]');
-                if (viewBtn) {
-                    window.location.href = viewBtn.href;
-                }
-            });
-        });
-    }
-
-    /**
-     * Handle search functionality
-     */
     function handleSearch(event) {
-        const searchTerm = event.target.value.toLowerCase();
-        filterTable(searchTerm, null);
+        const term = event.target.value.toLowerCase().trim();
+        filterTable(term, null);
     }
 
-    /**
-     * Handle sector filter
-     */
     function handleSectorFilter(event) {
-        const sectorFilter = event.target.value;
-        filterTable(null, sectorFilter);
+        const sector = event.target.value;
+        filterTable(null, sector);
     }
 
-    /**
-     * Filter table based on search term and sector
-     */
     function filterTable(searchTerm = null, sectorFilter = null) {
         const table = document.getElementById('policiesTable');
         if (!table) return;
 
         const searchInput = document.getElementById('searchInput');
         const sectorSelect = document.getElementById('sectorFilter');
-        
-        const currentSearch = searchTerm !== null ? searchTerm : 
-                            (searchInput ? searchInput.value.toLowerCase() : '');
-        const currentSector = sectorFilter !== null ? sectorFilter : 
-                            (sectorSelect ? sectorSelect.value : '');
 
-        const rows = table.querySelectorAll('tbody tr');
+        const currentSearch = searchTerm !== null ? searchTerm : (searchInput ? searchInput.value.toLowerCase().trim() : '');
+        const currentSector = sectorFilter !== null ? sectorFilter : (sectorSelect ? sectorSelect.value : '');
+
+        const rows = table.querySelectorAll('tbody tr:not(.no-results-row)');
         let visibleCount = 0;
 
         rows.forEach(row => {
-            // Skip empty state row
-            if (row.cells.length === 1) return;
+            if (row.cells.length < 3) return;
 
             const policyName = row.cells[0].textContent.toLowerCase();
-            const sectorBadge = row.cells[1].querySelector('.badge');
-            const sector = sectorBadge ? sectorBadge.textContent.trim() : '';
+            const sector = row.cells[1].textContent.trim();
 
             const matchesSearch = !currentSearch || policyName.includes(currentSearch);
-            const matchesSector = !currentSector || sector === currentSector;
+            const matchesSector = !currentSector || sector.toLowerCase().includes(currentSector.toLowerCase());
 
             if (matchesSearch && matchesSector) {
                 row.style.display = '';
@@ -436,24 +331,28 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Show/hide no results message
+        updateTableCount(visibleCount, rows.length);
         updateNoResultsMessage(table, visibleCount);
     }
 
-    /**
-     * Update no results message
-     */
+    function updateTableCount(visible, total) {
+        const counter = document.getElementById('tableCounter');
+        if (counter) {
+            counter.textContent = `Showing ${visible} of ${total} simulations`;
+        }
+    }
+
     function updateNoResultsMessage(table, visibleCount) {
         let noResultsRow = table.querySelector('.no-results-row');
-        
         if (visibleCount === 0) {
             if (!noResultsRow) {
                 noResultsRow = document.createElement('tr');
                 noResultsRow.className = 'no-results-row';
                 noResultsRow.innerHTML = `
-                    <td colspan="9" class="text-center py-4 text-muted">
-                        <i class="fas fa-search fa-2x mb-2"></i>
-                        <p>No policies match your search criteria</p>
+                    <td colspan="9" class="text-center py-5 text-muted">
+                        <i class="fas fa-search fa-2x mb-2 text-secondary opacity-50"></i>
+                        <p class="mb-0 fw-semibold">No policy simulations match your filter criteria.</p>
+                        <small>Try clearing your search term or sector filter.</small>
                     </td>
                 `;
                 table.querySelector('tbody').appendChild(noResultsRow);
@@ -464,9 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    /**
-     * Setup policy comparison functionality
-     */
     function setupPolicyComparison() {
         const compareForm = document.getElementById('compareForm');
         if (!compareForm) return;
@@ -487,198 +383,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    /**
-     * Setup export buttons
-     */
-    function setupExportButtons() {
-        // Export chart as image
-        document.addEventListener('click', function(e) {
-            if (e.target.matches('.export-chart')) {
-                const chartType = e.target.dataset.chart;
-                if (charts[chartType]) {
-                    exportChartAsImage(charts[chartType], `${chartType}.png`);
-                }
-            }
-        });
-
-        // Export table as CSV
-        const exportCsvBtn = document.getElementById('exportCsv');
-        if (exportCsvBtn) {
-            exportCsvBtn.addEventListener('click', exportTableAsCsv);
-        }
-    }
-
-    /**
-     * Export chart as image
-     */
-    function exportChartAsImage(chart, filename) {
-        const link = document.createElement('a');
-        link.download = filename;
-        link.href = chart.toBase64Image();
-        link.click();
-    }
-
-    /**
-     * Export table as CSV
-     */
-    function exportTableAsCsv() {
-        const table = document.getElementById('policiesTable');
-        if (!table) return;
-
-        const csv = [];
-        const headers = Array.from(table.querySelectorAll('thead th')).map(th => 
-            th.textContent.trim().replace(/[^\w\s]/gi, '')
-        );
-        csv.push(headers.join(','));
-
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            if (row.style.display !== 'none' && row.cells.length > 1) {
-                const rowData = Array.from(row.cells).slice(0, -1).map(cell => {
-                    let text = cell.textContent.trim();
-                    // Clean up text
-                    text = text.replace(/[^\w\s\-\.%]/gi, '');
-                    return `"${text}"`;
-                });
-                csv.push(rowData.join(','));
-            }
-        });
-
-        const csvContent = csv.join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'policy_data.csv';
-        link.click();
-        
-        window.URL.revokeObjectURL(url);
-    }
-
-    /**
-     * Handle keyboard shortcuts
-     */
-    function handleKeyboardShortcuts(event) {
-        // Ctrl/Cmd + F: Focus search
-        if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
-            event.preventDefault();
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.focus();
-            }
-        }
-
-        // Escape: Clear search
-        if (event.key === 'Escape') {
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput && searchInput === document.activeElement) {
-                searchInput.value = '';
-                filterTable('', null);
-            }
-        }
-    }
-
-    /**
-     * Refresh dashboard data
-     */
-    function refreshDashboardData() {
-        showLoading();
-        
-        // Simulate data refresh
-        setTimeout(() => {
-            loadDashboardData();
-            
-            // Update charts
-            Object.values(charts).forEach(chart => {
-                chart.update();
-            });
-            
-            hideLoading();
-            showNotification('Dashboard data refreshed successfully', 'success');
-        }, 1000);
-    }
-
-    /**
-     * Show loading indicator
-     */
-    function showLoading() {
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        if (loadingIndicator) {
-            loadingIndicator.style.display = 'block';
-        }
-        
-        // Add loading class to dashboard
-        document.body.classList.add('loading');
-    }
-
-    /**
-     * Hide loading indicator
-     */
-    function hideLoading() {
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        if (loadingIndicator) {
-            loadingIndicator.style.display = 'none';
-        }
-        
-        // Remove loading class from dashboard
-        document.body.classList.remove('loading');
-    }
-
-    /**
-     * Show notification
-     */
-    function showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-        notification.style.cssText = 'top: 20px; right: 20px; z-index: 1060; min-width: 300px;';
-        notification.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 5000);
-    }
-
-    /**
-     * Debounce function to limit function calls
-     */
     function debounce(func, wait) {
         let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
+        return function(...args) {
             clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
+            timeout = setTimeout(() => func.apply(this, args), wait);
         };
     }
-
-    /**
-     * Cleanup function for when page is unloaded
-     */
-    window.addEventListener('beforeunload', function() {
-        // Cleanup charts
-        Object.values(charts).forEach(chart => {
-            if (chart && typeof chart.destroy === 'function') {
-                chart.destroy();
-            }
-        });
-    });
-
-    // Make some functions globally available
-    window.dashboardUtils = {
-        refreshData: refreshDashboardData,
-        exportChart: exportChartAsImage,
-        exportCsv: exportTableAsCsv,
-        showNotification: showNotification
-    };
 });
