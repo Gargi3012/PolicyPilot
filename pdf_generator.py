@@ -32,26 +32,27 @@ def generate_policy_report(policy, prediction):
         title_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
-            fontSize=24,
-            spaceAfter=30,
-            textColor=colors.darkblue,
+            fontSize=22,
+            spaceAfter=24,
+            textColor=HexColor('#14532D'),
             alignment=1  # Center alignment
         )
         
         heading_style = ParagraphStyle(
             'CustomHeading',
             parent=styles['Heading2'],
-            fontSize=16,
-            spaceAfter=12,
-            textColor=colors.darkblue
+            fontSize=14,
+            spaceAfter=10,
+            textColor=HexColor('#14532D')
         )
         
         # Title Page
-        elements.append(Paragraph("Policy Impact Analysis Report", title_style))
-        elements.append(Spacer(1, 12))
+        elements.append(Paragraph("Indian Policy Impact Simulator", title_style))
+        elements.append(Paragraph("Executive Analytical Forecast Dossier", ParagraphStyle('Sub', parent=styles['Normal'], fontSize=11, textColor=HexColor('#64746A'), alignment=1, spaceAfter=20)))
+        elements.append(Spacer(1, 10))
         
         # Policy Information Section
-        elements.append(Paragraph("Policy Overview", heading_style))
+        elements.append(Paragraph("1. Policy Identification & Scope", heading_style))
         
         policy_data = [
             ['Policy Name', policy.name],
@@ -64,27 +65,28 @@ def generate_policy_report(policy, prediction):
         
         policy_table = Table(policy_data, colWidths=[2*inch, 4*inch])
         policy_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('BACKGROUND', (0, 0), (-1, -1), HexColor('#FFFFFF')),
+            ('TEXTCOLOR', (0, 0), (-1, -1), HexColor('#1B2B22')),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 12),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('ROWBACKGROUNDS', (0, 0), (-1, -1), [HexColor('#FFFFFF'), HexColor('#F7FAF8')]),
+            ('GRID', (0, 0), (-1, -1), 0.5, HexColor('#E3EBE5'))
         ]))
         
         elements.append(policy_table)
-        elements.append(Spacer(1, 20))
+        elements.append(Spacer(1, 16))
         
         # Policy Description
         if policy.description:
-            elements.append(Paragraph("Policy Description", heading_style))
+            elements.append(Paragraph("2. Policy Description & Context", heading_style))
             elements.append(Paragraph(policy.description, styles['Normal']))
-            elements.append(Spacer(1, 20))
+            elements.append(Spacer(1, 16))
         
         # Economic Impact Predictions
-        elements.append(Paragraph("Economic Impact Predictions", heading_style))
+        elements.append(Paragraph("3. Economic Impact Forecast", heading_style))
         
         impact_data = [
             ['Economic Indicator', 'Predicted Impact', 'Interpretation'],
@@ -96,22 +98,23 @@ def generate_policy_report(policy, prediction):
         
         impact_table = Table(impact_data, colWidths=[2*inch, 1.5*inch, 2.5*inch])
         impact_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#14532D')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), HexColor('#FFFFFF')),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 12),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.lightblue),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor('#FFFFFF'), HexColor('#F7FAF8')]),
+            ('GRID', (0, 0), (-1, -1), 0.5, HexColor('#E3EBE5')),
+            ('FONTSIZE', (0, 1), (-1, -1), 9),
         ]))
         
         elements.append(impact_table)
-        elements.append(Spacer(1, 20))
+        elements.append(Spacer(1, 16))
         
         # Confidence and Sentiment
-        elements.append(Paragraph("Analysis Confidence", heading_style))
+        elements.append(Paragraph("4. Model Confidence & Sentiment Analysis", heading_style))
         
         confidence_data = [
             ['Metric', 'Score', 'Level'],
@@ -121,22 +124,23 @@ def generate_policy_report(policy, prediction):
         
         confidence_table = Table(confidence_data, colWidths=[2*inch, 1.5*inch, 2.5*inch])
         confidence_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('BACKGROUND', (0, 0), (-1, 0), HexColor('#E5F1E8')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), HexColor('#14532D')),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 12),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.lightgrey),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor('#FFFFFF'), HexColor('#F7FAF8')]),
+            ('GRID', (0, 0), (-1, -1), 0.5, HexColor('#E3EBE5'))
         ]))
         
         elements.append(confidence_table)
-        elements.append(Spacer(1, 30))
+        elements.append(Spacer(1, 20))
         
         # Sector-wise Breakdown
         if prediction.get_sector_breakdown():
-            elements.append(Paragraph("Sector-wise Impact Breakdown", heading_style))
+            elements.append(Paragraph("5. Sector-wise Impact Breakdown", heading_style))
             
             sector_breakdown = prediction.get_sector_breakdown()
             sector_data = [['Sector', 'GDP Impact (%)', 'Employment Impact (%)', 'Overall Impact (%)']]
@@ -151,14 +155,15 @@ def generate_policy_report(policy, prediction):
             
             sector_table = Table(sector_data, colWidths=[1.5*inch, 1.5*inch, 1.5*inch, 1.5*inch])
             sector_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.darkgreen),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('BACKGROUND', (0, 0), (-1, 0), HexColor('#16834A')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), HexColor('#FFFFFF')),
                 ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                 ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.lightgreen),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                ('TOPPADDING', (0, 0), (-1, -1), 6),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor('#FFFFFF'), HexColor('#F7FAF8')]),
+                ('GRID', (0, 0), (-1, -1), 0.5, HexColor('#E3EBE5')),
                 ('FONTSIZE', (0, 1), (-1, -1), 9),
             ]))
             
@@ -194,12 +199,12 @@ def generate_policy_report(policy, prediction):
         
         # Footer
         elements.append(Spacer(1, 30))
-        footer_text = f"Generated by Policy Impact Simulator | {datetime.now().strftime('%B %d, %Y at %I:%M %p')}"
+        footer_text = f"Generated by Indian Policy Impact Simulator | {datetime.now().strftime('%B %d, %Y at %I:%M %p')}"
         footer_style = ParagraphStyle(
             'Footer',
             parent=styles['Normal'],
             fontSize=8,
-            textColor=colors.grey,
+            textColor=HexColor('#64746A'),
             alignment=1
         )
         elements.append(Paragraph(footer_text, footer_style))
