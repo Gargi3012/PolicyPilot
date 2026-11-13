@@ -17,7 +17,24 @@ db = SQLAlchemy(model_class=Base)
 # Create the app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-change-in-production")
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+class VercelPathMiddleware:
+    """Normalize PATH_INFO for Vercel serverless function rewrites."""
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        path = environ.get("PATH_INFO", "")
+        for prefix in ["/app.py", "/api/index.py", "/api/index", "/api", "/index.py"]:
+            if path == prefix:
+                environ["PATH_INFO"] = "/"
+                break
+            elif path.startswith(prefix + "/"):
+                environ["PATH_INFO"] = path[len(prefix):]
+                break
+        return self.wsgi_app(environ, start_response)
+
+app.wsgi_app = VercelPathMiddleware(ProxyFix(app.wsgi_app, x_proto=1, x_host=1))
 
 import tempfile
 

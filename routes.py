@@ -11,6 +11,9 @@ import io
 predictor = PolicyImpactPredictor()
 
 @app.route('/')
+@app.route('/app.py')
+@app.route('/api/index')
+@app.route('/api')
 def index():
     """Home page with policy input form"""
     recent_policies = Policy.query.order_by(Policy.created_at.desc()).limit(5).all()

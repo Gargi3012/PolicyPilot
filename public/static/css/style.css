@@ -1,0 +1,1090 @@
+/* ==========================================================================
+   Indian Policy Impact Simulator - Professional Design System
+   Theme: White + Sage Green + Emerald Green
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design Tokens & CSS Variables
+   -------------------------------------------------------------------------- */
+:root {
+    /* Primary Color Palette */
+    --bg-primary: #F7FAF8;
+    --bg-secondary: #FFFFFF;
+    --color-primary: #16834A;
+    --color-primary-hover: #126B3C;
+    --color-primary-active: #0E532E;
+    --color-dark-green: #14532D;
+    --color-sage: #E5F1E8;
+    --color-soft-green: #EFF7F0;
+    --color-muted-bg: #F0F4F1;
+    
+    /* Typography Colors */
+    --text-primary: #1B2B22;
+    --text-secondary: #64746A;
+    --text-muted: #829288;
+    --text-inverse: #FFFFFF;
+
+    /* Border & Divider Colors */
+    --border-color: #E3EBE5;
+    --border-light: #EEF4F0;
+    --border-focus: #16834A;
+
+    /* Status & Semantic Colors */
+    --color-success: #16834A;
+    --color-success-bg: #EFF7F0;
+    --color-success-border: #A7D7B5;
+    --color-success-text: #14532D;
+
+    --color-danger: #DC2626;
+    --color-danger-bg: #FEF2F2;
+    --color-danger-border: #FECACA;
+    --color-danger-text: #991B1B;
+
+    --color-warning: #D97706;
+    --color-warning-bg: #FFFBEB;
+    --color-warning-border: #FDE68A;
+    --color-warning-text: #92400E;
+
+    --color-info: #0D9488;
+    --color-info-bg: #F0FDFA;
+    --color-info-border: #99F6E4;
+    --color-info-text: #115E59;
+
+    /* Spacing & Radii */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+
+    /* Shadows (Subtle, Crisp, Non-muddy) */
+    --shadow-subtle: 0 1px 2px 0 rgba(20, 40, 25, 0.04);
+    --shadow-card: 0 1px 3px 0 rgba(20, 40, 25, 0.05), 0 1px 2px -1px rgba(20, 40, 25, 0.03);
+    --shadow-md: 0 4px 6px -1px rgba(20, 40, 25, 0.06), 0 2px 4px -2px rgba(20, 40, 25, 0.03);
+    --shadow-hover: 0 10px 15px -3px rgba(20, 40, 25, 0.08), 0 4px 6px -4px rgba(20, 40, 25, 0.03);
+
+    /* Transitions */
+    --transition-fast: all 0.15s ease-in-out;
+    --transition-base: all 0.25s ease-in-out;
+    
+    /* Fonts */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   2. Global Resets & Base Styles
+   -------------------------------------------------------------------------- */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 0.9375rem; /* 15px */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --------------------------------------------------------------------------
+   3. Typography Hierarchy
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+
+h1, .h1 { font-size: 2.125rem; }  /* ~34px */
+h2, .h2 { font-size: 1.625rem; }  /* ~26px */
+h3, .h3 { font-size: 1.25rem; }   /* ~20px */
+h4, .h4 { font-size: 1.125rem; }  /* ~18px */
+h5, .h5 { font-size: 1rem; }     /* ~16px */
+h6, .h6 { font-size: 0.875rem; }  /* ~14px */
+
+p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.text-dark {
+    color: var(--text-primary) !important;
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-primary-green {
+    color: var(--color-primary) !important;
+}
+
+.text-dark-green {
+    color: var(--color-dark-green) !important;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-primary-hover);
+}
+
+/* --------------------------------------------------------------------------
+   4. Navigation Bar
+   -------------------------------------------------------------------------- */
+.navbar-custom {
+    background-color: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.875rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    box-shadow: var(--shadow-subtle);
+}
+
+.navbar-brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.brand-emblem {
+    width: 36px;
+    height: 36px;
+    background: var(--color-soft-green);
+    border: 1px solid var(--color-sage);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    font-size: 1.125rem;
+    box-shadow: 0 1px 2px rgba(22, 131, 74, 0.1);
+}
+
+.brand-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.015em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-tag {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--color-soft-green);
+    color: var(--color-dark-green);
+    border: 1px solid var(--color-sage);
+    padding: 2px 7px;
+    border-radius: 9999px;
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--color-dark-green);
+    background-color: var(--color-soft-green);
+}
+
+.navbar-nav .nav-link.active,
+.navbar-nav .show > .nav-link {
+    color: var(--color-dark-green);
+    background-color: var(--color-soft-green);
+    font-weight: 600;
+}
+
+.navbar-nav .nav-link i {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: var(--transition-fast);
+}
+
+.navbar-nav .nav-link:hover i,
+.navbar-nav .nav-link.active i {
+    color: var(--color-primary);
+}
+
+.navbar-toggler {
+    border: 1px solid var(--border-color);
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 2px var(--color-sage);
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    background: var(--bg-secondary);
+    padding: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-fast);
+}
+
+.dropdown-item:hover {
+    background-color: var(--color-soft-green);
+    color: var(--color-dark-green);
+}
+
+.dropdown-item i {
+    color: var(--color-primary);
+}
+
+/* --------------------------------------------------------------------------
+   5. Buttons & Controls
+   -------------------------------------------------------------------------- */
+.btn {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    box-shadow: none;
+    letter-spacing: -0.01em;
+}
+
+.btn:focus, .btn:active:focus {
+    box-shadow: 0 0 0 3px rgba(22, 131, 74, 0.2);
+}
+
+/* Primary Button (Emerald Green) */
+.btn-primary,
+.btn-emerald {
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    color: var(--text-inverse);
+    box-shadow: 0 1px 2px rgba(22, 131, 74, 0.15);
+}
+
+.btn-primary:hover,
+.btn-emerald:hover {
+    background-color: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+    color: var(--text-inverse);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(22, 131, 74, 0.2);
+}
+
+.btn-primary:active,
+.btn-emerald:active {
+    background-color: var(--color-primary-active);
+    border-color: var(--color-primary-active);
+    transform: translateY(0);
+}
+
+/* Secondary / Outlined Button */
+.btn-secondary {
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: #E2EAE4;
+    border-color: #D2DED5;
+    color: var(--color-dark-green);
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--color-primary);
+    background-color: var(--bg-secondary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--color-soft-green);
+    border-color: var(--color-primary);
+    color: var(--color-dark-green);
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--bg-muted);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-outline-danger {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--color-danger-border);
+    color: var(--color-danger);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--color-danger-bg);
+    border-color: var(--color-danger);
+    color: var(--color-danger-text);
+}
+
+.btn-danger {
+    background-color: #DC2626;
+    border: 1px solid #DC2626;
+    color: #FFFFFF;
+}
+
+.btn-danger:hover {
+    background-color: #B91C1C;
+    border-color: #B91C1C;
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+    border-radius: var(--radius-md);
+}
+
+/* --------------------------------------------------------------------------
+   6. Cards & Containers
+   -------------------------------------------------------------------------- */
+.card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-fast);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.125rem 1.25rem;
+    font-weight: 600;
+}
+
+.card-header h5,
+.card-header .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.card-footer {
+    background-color: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    padding: 0.875rem 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   7. Hero Section
+   -------------------------------------------------------------------------- */
+.hero-section {
+    background: linear-gradient(180deg, #EFF7F0 0%, #F7FAF8 100%);
+    border-bottom: 1px solid var(--border-color);
+    padding: 3.5rem 0 3rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--color-sage);
+    color: var(--color-dark-green);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-subtle);
+}
+
+.hero-pill i {
+    color: var(--color-primary);
+}
+
+.hero-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.0625rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+    max-width: 620px;
+}
+
+/* Hero Preview Card / Live Widget */
+.hero-preview-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hover);
+    padding: 1.25rem;
+    position: relative;
+}
+
+.hero-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.hero-preview-metric {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.875rem;
+}
+
+.hero-preview-metric .val {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.hero-preview-metric .lbl {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   8. Feature Cards
+   -------------------------------------------------------------------------- */
+.feature-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    height: 100%;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-card);
+}
+
+.feature-card:hover {
+    border-color: #BBD6C4;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+.feature-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    background: var(--color-soft-green);
+    border: 1px solid var(--color-sage);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    margin-bottom: 1.125rem;
+}
+
+.feature-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.feature-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   9. Form Controls & Simulation Builder
+   -------------------------------------------------------------------------- */
+.form-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.form-group-section {
+    padding: 1.25rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.25rem;
+}
+
+.form-group-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-dark-green);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.375rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.form-label i {
+    color: var(--color-primary);
+    font-size: 0.8125rem;
+}
+
+.form-control, .form-select {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-secondary);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(22, 131, 74, 0.15);
+    color: var(--text-primary);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.form-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* Range Slider Styling */
+.form-range {
+    height: 6px;
+    accent-color: var(--color-primary);
+}
+
+.form-range::-webkit-slider-thumb {
+    background: var(--color-primary);
+}
+
+/* --------------------------------------------------------------------------
+   10. Statistics / KPI Metric Cards
+   -------------------------------------------------------------------------- */
+.stat-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    border-color: #BBD6C4;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.stat-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.stat-card-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0;
+}
+
+.stat-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: var(--color-soft-green);
+    border: 1px solid var(--color-sage);
+    color: var(--color-primary);
+}
+
+.stat-card-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card-trend {
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. Tables & Lists
+   -------------------------------------------------------------------------- */
+.table-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.table thead th {
+    background-color: var(--color-muted-bg);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.table tbody td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--color-soft-green);
+}
+
+/* --------------------------------------------------------------------------
+   12. Badges & Status Indicators
+   -------------------------------------------------------------------------- */
+.badge {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Bootstrap badge color overrides to match our design system */
+.badge.bg-primary {
+    background-color: var(--color-soft-green) !important;
+    color: var(--color-dark-green) !important;
+    border: 1px solid var(--color-sage);
+}
+
+.badge.bg-success {
+    background-color: var(--color-success-bg) !important;
+    color: var(--color-success-text) !important;
+    border: 1px solid var(--color-success-border);
+}
+
+.badge.bg-danger {
+    background-color: var(--color-danger-bg) !important;
+    color: var(--color-danger-text) !important;
+    border: 1px solid var(--color-danger-border);
+}
+
+.badge.bg-warning {
+    background-color: var(--color-warning-bg) !important;
+    color: var(--color-warning-text) !important;
+    border: 1px solid var(--color-warning-border);
+}
+
+.badge.bg-info {
+    background-color: var(--color-info-bg) !important;
+    color: var(--color-info-text) !important;
+    border: 1px solid var(--color-info-border);
+}
+
+.badge.bg-secondary {
+    background-color: var(--bg-muted) !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border-color);
+}
+
+.badge-pill-sage {
+    background-color: var(--color-soft-green);
+    color: var(--color-dark-green);
+    border: 1px solid var(--color-sage);
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+}
+
+/* --------------------------------------------------------------------------
+   13. Results & Impact Cards
+   -------------------------------------------------------------------------- */
+.impact-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.impact-card.positive {
+    border-left: 4px solid var(--color-primary);
+    background: linear-gradient(180deg, var(--color-success-bg) 0%, var(--bg-secondary) 100%);
+}
+
+.impact-card.negative {
+    border-left: 4px solid var(--color-danger);
+    background: linear-gradient(180deg, var(--color-danger-bg) 0%, var(--bg-secondary) 100%);
+}
+
+.impact-card.neutral {
+    border-left: 4px solid var(--color-warning);
+    background: linear-gradient(180deg, var(--color-warning-bg) 0%, var(--bg-secondary) 100%);
+}
+
+.impact-card-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0.35rem 0;
+}
+
+.impact-card-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.confidence-bar {
+    height: 8px;
+    background-color: var(--border-color);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.confidence-bar-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    border-radius: 9999px;
+    transition: width 0.6s ease;
+}
+
+/* Progress Bar Overrides */
+.progress {
+    height: 8px;
+    background-color: var(--border-color);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: var(--color-primary);
+}
+
+/* --------------------------------------------------------------------------
+   14. Comparison Page Elements
+   -------------------------------------------------------------------------- */
+.comparison-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-base);
+}
+
+.comparison-card:hover {
+    border-color: #BBD6C4;
+    box-shadow: var(--shadow-hover);
+}
+
+.comparison-header {
+    background: var(--color-soft-green);
+    border-bottom: 1px solid var(--color-sage);
+    padding: 1.125rem 1.25rem;
+}
+
+.metric-comparison {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.impact-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.impact-positive { background-color: var(--color-primary); }
+.impact-negative { background-color: var(--color-danger); }
+.impact-neutral { background-color: var(--color-warning); }
+
+.vs-badge {
+    background: var(--color-soft-green);
+    border: 1px solid var(--color-sage);
+    color: var(--color-dark-green);
+    padding: 4px 14px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   15. Breadcrumbs
+   -------------------------------------------------------------------------- */
+.breadcrumb {
+    font-size: 0.8125rem;
+    margin-bottom: 0.75rem;
+}
+
+.breadcrumb-item a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--color-primary);
+}
+
+.breadcrumb-item.active {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   16. Alerts & Flash Messages
+   -------------------------------------------------------------------------- */
+.alert {
+    border-radius: var(--radius-md);
+    padding: 0.875rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow-subtle);
+}
+
+.alert-success {
+    background-color: var(--color-success-bg);
+    border-color: var(--color-success-border);
+    color: var(--color-success-text);
+}
+
+.alert-danger {
+    background-color: var(--color-danger-bg);
+    border-color: var(--color-danger-border);
+    color: var(--color-danger-text);
+}
+
+/* --------------------------------------------------------------------------
+   17. Footer
+   -------------------------------------------------------------------------- */
+.footer-custom {
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: 2.5rem 0 2rem 0;
+    margin-top: 4rem;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+}
+
+.footer-brand {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   18. Chart Containers & Responsive Visuals
+   -------------------------------------------------------------------------- */
+.chart-container {
+    position: relative;
+    width: 100%;
+    min-height: 280px;
+}
+
+/* --------------------------------------------------------------------------
+   19. Error Templates (404, 500)
+   -------------------------------------------------------------------------- */
+.error-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 3.5rem 2rem;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.error-code {
+    font-size: 5rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.04em;
+}
+
+/* --------------------------------------------------------------------------
+   20. Custom Scrollbars
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CBDAD0;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #A5B8AC;
+}
+
+/* --------------------------------------------------------------------------
+   21. Responsive Media Queries
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .hero-preview-card {
+        margin-top: 1.5rem;
+    }
+
+    .stat-card-value {
+        font-size: 1.5rem;
+    }
+}
