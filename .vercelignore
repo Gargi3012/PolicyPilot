@@ -1,0 +1,14 @@
+.git
+.github
+.replit
+replit.md
+ReadMe.md
+attached_assets/
+instance/
+*.db
+*.sqlite
+*.sqlite3
+__pycache__/
+*.pyc
+uv.lock
+pyproject.toml
