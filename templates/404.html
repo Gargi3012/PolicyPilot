@@ -14,6 +14,7 @@
                 <h2 class="h4 fw-bold text-dark mb-2">Resource Not Found</h2>
                 <p class="text-secondary small mb-4">
                     The policy simulation, dossier, or page you are requesting could not be located or may have been updated.
+                    <br><small class="text-muted" style="font-family: monospace;">[Requested Path: {{ request.path }} | SCRIPT_NAME: {{ request.environ.get('SCRIPT_NAME') }} | PATH_INFO: {{ request.environ.get('PATH_INFO') }}]</small>
                 </p>
                 <div class="d-flex justify-content-center gap-2">
                     <a href="{{ url_for('index') }}" class="btn btn-emerald">
